@@ -16,6 +16,9 @@ CREATE TABLE IF NOT EXISTS Products
    category_id VARCHAR(100) NOT NULL,
    product_name VARCHAR(100) NOT NULL, 
    nutriscore_grade VARCHAR(1) DEFAULT NULL,
+   store VARCHAR(50) DEFAULT NULL,
+   url_product VARCHAR(100) NOT NULL,
+   description TEXT DEFAULT NULL,
    PRIMARY KEY(id),
    CONSTRAINT fk_categories_id
     FOREIGN KEY(category_id)

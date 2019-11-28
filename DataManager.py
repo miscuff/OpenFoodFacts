@@ -1,6 +1,6 @@
 import mysql.connector
 import openfoodfacts
-from queries_SQL import *
+from queries_sql import *
 
 
 class DataManager:
@@ -36,7 +36,7 @@ class DataManager:
         self.cat_id = self.get_categories()
         self.cat_name = [s.replace('fr:', '') for s in self.cat_id]
         j = 0
-        while j < 5:l
+        while j < 5:
             for i in self.cat_id:
                 query_cat = """INSERT INTO Categories (id, nom)
                  VALUES ('%s','%s')""" \
@@ -49,21 +49,32 @@ class DataManager:
         products_list = self.get_products(category_id)
         for i in products_list:
             try:
-                query_prod = """INSERT INTO Produits (id, categorie_id, nom_produit,
-                grade_nutriscore) VALUES ('%s','%s','%s','%s') """ \
+                query_prod = """INSERT INTO Produits (id, categorie_id, 
+                product_name, nutriscore_grade, store, url_product, 
+                description) VALUES ('%s','%s','%s','%s','%s','%s','%s') """ \
                              % (i["id"], category_id, i["product_name"],
-                                i["nutriscore_grade"])
+                                i["nutriscore_grade"], i["stores"],
+                                self.get_url_product(i["id"]),
+                                i["generic_name"])
                 self.cursor.execute(query_prod)
             except KeyError:
-                query_prod = """INSERT INTO Produits (id, categorie_id, nom_produit) 
-                VALUES ('%s','%s','%s') """ \
-                             % (i["id"], category_id, i["product_name"])
+                query_prod = """INSERT INTO Produits (id, categorie_id, 
+                product_name, store, url_product, 
+                description) VALUES ('%s','%s','%s','%s','%s','%s') """ \
+                             % (i["id"], category_id, i["product_name"],
+                                i["stores"],
+                                self.get_url_product(i["id"]),
+                                i["generic_name"])
                 self.cursor.execute(query_prod)
                 continue
         print("Inserted", self.cursor.rowcount, "row(s) of data.")
 
-    #Voir comment insérer ceci :
-    def push_data(self):
+    def get_url_product(self, product_id):
+        url = "https://world.openfoodfacts.org/api/v0/product/" + product_id
+        return url
+
+    #Appeler la méthode :
+    def push_data(self, ):
         try:
             self.conn.commit()
         except:

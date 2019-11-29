@@ -17,7 +17,7 @@ class DataManager:
         self.cat_id = []
         self.cat_name = []
 
-    def create_tables(self, table):
+    def create_table(self, table):
         self.cursor.execute(table)
 
     def get_categories(self):
@@ -35,15 +35,12 @@ class DataManager:
     def insert_categories(self):
         self.cat_id = self.get_categories()
         self.cat_name = [s.replace('fr:', '') for s in self.cat_id]
-        j = 0
-        while j < 5:
-            for i in self.cat_id:
-                query_cat = """INSERT INTO Categories (id, nom)
-                 VALUES ('%s','%s')""" \
-                            % (self.cat_id[i], self.cat_name[i])
-                self.cursor.execute(query_cat)
-            j += 1
-        print("Inserted", self.cursor.rowcount, "row(s) of data.")
+        i = 0
+        while i < 5:
+            query_cat = """INSERT INTO Categories (id, name) 
+            VALUES ('%s','%s')""" % (self.cat_id[i], self.cat_name[i])
+            self.cursor.execute(query_cat)
+            i += 1
 
     def insert_products(self, category_id):
         products_list = self.get_products(category_id)
@@ -67,20 +64,19 @@ class DataManager:
                                 i["generic_name"])
                 self.cursor.execute(query_prod)
                 continue
-        print("Inserted", self.cursor.rowcount, "row(s) of data.")
 
     def get_url_product(self, product_id):
         url = "https://world.openfoodfacts.org/api/v0/product/" + product_id
         return url
 
-    #Appeler la méthode :
-    def push_data(self, ):
+    def push_data(self, method):
         try:
+            method()
             self.conn.commit()
+            print("Inserted", self.cursor.rowcount, "row(s) of data.")
         except:
-        # En cas d'erreur on annule les modifications
             self.conn.rollback()
-
+            print("Error as occurred, Rollback")
         self.conn.close()
 
     #Récupérer les id catlogues stockées dans la base de données

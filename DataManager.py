@@ -1,5 +1,5 @@
 import mysql.connector
-import openfoodfacts
+# import openfoodfacts
 from queries_sql import *
 
 

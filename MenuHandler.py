@@ -1,26 +1,114 @@
-
-
 class MenuHandler:
 
     def __init__(self):
-        self.continue_program = True
+        self.continue_main_menu = True
+        self.continue_category_menu = True
+        self.continue_product_menu = True
+        self.continue_choose_category = True
+        self.continue_choose_product = True
+        self.continue_choose_substitute = True
+        self.continue_record_substitute = True
 
-    def show_menu(self):
-        while self.continue_program:
+    def show_main_menu(self):
+        while self.continue_main_menu:
             print("""
-            1.Add a Student
-            2.Delete a Student
-            3.Look Up Student Record
-            4.Exit/Quit
+            1.Remplacer un aliment
+            2.Retrouver mes aliments substitués
+            3.Exit/Quit
             """)
-            ans = raw_input("What would you like to do? ")
+            ans = input("Que voulez-vous faire? ")
             if ans == "1":
-                print("\n Student Added")
+                self.continue_category_menu = True
+                self.show_category_menu()
             elif ans == "2":
-                print("\n Student Deleted")
+                print("\n La liste de mes aliments substitués :")
             elif ans == "3":
-                print("\n Student Record Found")
-            elif ans == "4":
-                print("\n Goodbye")
+                print("\n Au revoir")
+                self.continue_main_menu = False
             elif ans != "":
-                print("\n Not Valid Choice Try again")
+                print("\n 1Ce n'est pas un choix valide")
+
+    def show_category_menu(self):
+        while self.continue_category_menu:
+            print("""
+            1.Sélectionner une catégorie
+            2.Retourner au menu principal
+            """)
+            ans = input("Que voulez-vous faire? ")
+            if ans == "1":
+                print("\n La liste des catégories:")
+                self.continue_main_menu = False
+                self.continue_choose_category = True
+                self.choose_category()
+            elif ans == "2":
+                self.continue_category_menu = False
+                self.continue_main_menu = True
+            elif ans != "":
+                print("\n2 Ce n'est pas un choix valide")
+
+    def choose_category(self):
+        while self.continue_choose_category:
+            ans = input("Veuillez choisir une catégorie dans "
+                        "la liste ci-dessus")
+            if ans == "cat":
+                self.continue_category_menu = False
+                self.continue_product_menu = True
+                self.show_product_menu()
+            elif ans != "":
+                print("\n23 Ce n'est pas un choix valide")
+
+    def show_product_menu(self):
+        while self.continue_product_menu:
+            print("""\n
+            1.Sélectionner un produit
+            2.Retourner à la liste des catégories
+            """)
+            ans = input("Que voulez-vous faire?")
+            if ans == "1":
+                self.continue_choose_category = False
+                self.continue_choose_product = True
+                self.choose_product()
+            elif ans == "2":
+                self.continue_product_menu = False
+                self.continue_choose_category = False
+                self.continue_category_menu = True
+            elif ans != "":
+                print("\n 3Ce n'est pas un choix valide")
+
+    def choose_product(self):
+        while self.continue_choose_product:
+            ans = input("Veuillez choisir un aliment dans la liste ci-dessus")
+            if ans == "aliment":
+                self.continue_product_menu = False
+                self.continue_choose_product = False
+                self.continue_choose_substitute = True
+                self.choose_substitute()
+            elif ans != "":
+                print("\n4 Ce n'est pas un choix valide")
+
+    def choose_substitute(self):
+        while self.continue_choose_substitute:
+            print("Ci-dessous la liste des substituts à ce produit"
+                        "avec un meilleur nutriscore grade")
+            ans = input("Veuillez choisir un des substituts")
+            if ans == "sub":
+                self.continue_choose_substitute = False
+                self.continue_record_substitute = True
+                self.record_substitute()
+            elif ans != "":
+                print("\n4 Ce n'est pas un choix valide")
+
+    def record_substitute(self):
+        while self.continue_record_substitute:
+            ans = input("Voulez vous sauvegarder cet aliment dans "
+                        " votre base de données? (Oui/Non) ")
+            if ans == "Oui":
+                print("\n L'aliment a été sauvegardé")
+                self.continue_record_substitute = False
+                self.continue_main_menu = True
+            elif ans == "Non":
+                print("\n L'aliment n'a pas été sauvegardé")
+                self.continue_record_substitute = False
+                self.continue_main_menu = True
+            elif ans != "":
+                print("\n 5Ce n'est pas un choix valide")

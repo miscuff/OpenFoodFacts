@@ -1,5 +1,8 @@
+from DataFeeder import *
+
 class MenuHandler:
 
+    # Initialisation of the Boolean for the different menus
     def __init__(self):
         self.continue_main_menu = True
         self.continue_category_menu = True
@@ -9,10 +12,11 @@ class MenuHandler:
         self.continue_choose_substitute = True
         self.continue_record_substitute = True
 
+    # Starting menu
     def show_main_menu(self):
         while self.continue_main_menu:
             print("""
-            1.Remplacer un aliment
+            1.Quel aliment souhaitez-vous remplacer ?
             2.Retrouver mes aliments substitués
             3.Exit/Quit
             """)
@@ -28,6 +32,7 @@ class MenuHandler:
             elif ans != "":
                 print("\n 1Ce n'est pas un choix valide")
 
+    # Menu to manage the categories
     def show_category_menu(self):
         while self.continue_category_menu:
             print("""
@@ -46,6 +51,7 @@ class MenuHandler:
             elif ans != "":
                 print("\n2 Ce n'est pas un choix valide")
 
+    # Menu to select a catagory
     def choose_category(self):
         while self.continue_choose_category:
             ans = input("Veuillez choisir une catégorie dans "
@@ -57,6 +63,7 @@ class MenuHandler:
             elif ans != "":
                 print("\n23 Ce n'est pas un choix valide")
 
+    # Menu to manage the products
     def show_product_menu(self):
         while self.continue_product_menu:
             print("""\n
@@ -75,6 +82,7 @@ class MenuHandler:
             elif ans != "":
                 print("\n 3Ce n'est pas un choix valide")
 
+    # Menu to select a product
     def choose_product(self):
         while self.continue_choose_product:
             ans = input("Veuillez choisir un aliment dans la liste ci-dessus")
@@ -86,6 +94,7 @@ class MenuHandler:
             elif ans != "":
                 print("\n4 Ce n'est pas un choix valide")
 
+    # Menu to select a substitute
     def choose_substitute(self):
         while self.continue_choose_substitute:
             print("Ci-dessous la liste des substituts à ce produit"
@@ -98,6 +107,7 @@ class MenuHandler:
             elif ans != "":
                 print("\n4 Ce n'est pas un choix valide")
 
+    # Menu to record the substitute
     def record_substitute(self):
         while self.continue_record_substitute:
             ans = input("Voulez vous sauvegarder cet aliment dans "

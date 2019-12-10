@@ -11,6 +11,7 @@ class MenuHandler:
         self.continue_choose_product = True
         self.continue_choose_substitute = True
         self.continue_record_substitute = True
+        self.data_feeder = DataFeeder()
 
     # Starting menu
     def show_main_menu(self):
@@ -26,6 +27,7 @@ class MenuHandler:
                 self.show_category_menu()
             elif ans == "2":
                 print("\n La liste de mes aliments substitués :")
+                self.data_feeder.get_substitutes_list()
             elif ans == "3":
                 print("\n Au revoir")
                 self.continue_main_menu = False
@@ -54,17 +56,24 @@ class MenuHandler:
     # Menu to select a catagory
     def choose_category(self):
         while self.continue_choose_category:
+            cat_list = self.data_feeder.get_categories()
+            for count, element in enumerate(cat_list):
+                print("{} - {} \n".format(count + 1, element))
             ans = input("Veuillez choisir une catégorie dans "
                         "la liste ci-dessus")
-            if ans == "cat":
+            ans = int(ans)
+            if ans in range(0, len(cat_list) + 1):
+                print("Vous avez choisi la catégorie : {}".format(cat_list
+                                                                [ans - 1]))
+                category_choose = cat_list[ans - 1]
                 self.continue_category_menu = False
                 self.continue_product_menu = True
-                self.show_product_menu()
+                self.show_product_menu(category_choose)
             elif ans != "":
-                print("\n23 Ce n'est pas un choix valide")
+                print("\nCe n'est pas un choix valide \n")
 
     # Menu to manage the products
-    def show_product_menu(self):
+    def show_product_menu(self, category):
         while self.continue_product_menu:
             print("""\n
             1.Sélectionner un produit
@@ -74,7 +83,7 @@ class MenuHandler:
             if ans == "1":
                 self.continue_choose_category = False
                 self.continue_choose_product = True
-                self.choose_product()
+                self.choose_product(category)
             elif ans == "2":
                 self.continue_product_menu = False
                 self.continue_choose_category = False
@@ -83,29 +92,41 @@ class MenuHandler:
                 print("\n 3Ce n'est pas un choix valide")
 
     # Menu to select a product
-    def choose_product(self):
+    def choose_product(self, category):
         while self.continue_choose_product:
-            ans = input("Veuillez choisir un aliment dans la liste ci-dessus")
-            if ans == "aliment":
+            prod_list = self.data_feeder.get_products(category)
+            for count, element in enumerate(prod_list):
+                print("{} - {} \n".format(count + 1, element))
+            ans = input("Veuillez choisir un produit dans la liste ci-dessus")
+            ans = int(ans)
+            if ans in range(0, len(prod_list) + 1):
+                print("Vous avez choisi le produit : {} \n".format(prod_list
+                                                                  [ans - 1]))
+                product_choose = prod_list[ans - 1]
+                nutriscore_produit = self.data_feeder.\
+                    get_product_nutriscore(product_choose)
+                print("Le nutriscore associé à votre produit est de {}"
+                      .format(nutriscore_produit))
                 self.continue_product_menu = False
                 self.continue_choose_product = False
                 self.continue_choose_substitute = True
-                self.choose_substitute()
+                self.choose_substitute(category, nutriscore_produit)
             elif ans != "":
                 print("\n4 Ce n'est pas un choix valide")
 
     # Menu to select a substitute
-    def choose_substitute(self):
+    def choose_substitute(self, category, nutriscore):
         while self.continue_choose_substitute:
-            print("Ci-dessous la liste des substituts à ce produit"
-                        "avec un meilleur nutriscore grade")
-            ans = input("Veuillez choisir un des substituts")
-            if ans == "sub":
-                self.continue_choose_substitute = False
-                self.continue_record_substitute = True
-                self.record_substitute()
-            elif ans != "":
-                print("\n4 Ce n'est pas un choix valide")
+            print("Nous avons trouvé un substitut à votre produit"
+                  " avec un meilleur nutriscore \n:")
+            sub = self.data_feeder.get_substitutes(category, nutriscore)
+            print("Nom : {} \n"
+                  "Description : {} \n"
+                  "Magasin : {} \n"
+                  "Lien : {} \n".format(sub[0], sub[1], sub[2],
+                                        sub[3]))
+            self.continue_choose_substitute = False
+            self.record_substitute()
 
     # Menu to record the substitute
     def record_substitute(self):
@@ -122,3 +143,4 @@ class MenuHandler:
                 self.continue_main_menu = True
             elif ans != "":
                 print("\n 5Ce n'est pas un choix valide")
+

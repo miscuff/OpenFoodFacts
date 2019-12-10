@@ -117,16 +117,20 @@ class MenuHandler:
     # Menu to select a substitute
     def choose_substitute(self, category, nutriscore):
         while self.continue_choose_substitute:
-            print("Nous avons trouvé un substitut à votre produit"
-                  " avec un meilleur nutriscore \n:")
             sub = self.data_feeder.get_substitutes(category, nutriscore)
-            print("Nom : {} \n"
-                  "Description : {} \n"
-                  "Magasin : {} \n"
-                  "Lien : {} \n".format(sub[0], sub[1], sub[2],
-                                        sub[3]))
-            self.continue_choose_substitute = False
-            self.record_substitute()
+            if sub:
+                print("Nous avons trouvé un substitut à votre produit"
+                      " avec un meilleur nutriscore \n:")
+                print("Nom : {} \n"
+                      "Description : {} \n"
+                      "Magasin : {} \n"
+                      "Lien : {} \n".format(sub[0], sub[1], sub[2],
+                                            sub[3]))
+                self.continue_choose_substitute = False
+                self.record_substitute()
+            else:
+                self.continue_choose_substitute = False
+                self.continue_main_menu = True
 
     # Menu to record the substitute
     def record_substitute(self):

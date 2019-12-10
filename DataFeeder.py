@@ -57,9 +57,12 @@ class DataFeeder:
                 FROM Products
                 where Products.product_name = '%s' """ % product
         self.cursor.execute(query_prod)
-        product = self.cursor.fetchall()
-        product_nutriscore = str(product[0][0])
-        return product_nutriscore
+        try:
+            product = self.cursor.fetchall()
+            product_nutriscore = str(product[0][0])
+            return product_nutriscore
+        except ValueError:
+            print("Il n'y a pas de produit dans cette catégorie")
 
     # The substitutes are the products with a better nustricore grade
     def get_substitutes(self, category, nutriscore_product):
@@ -74,13 +77,16 @@ class DataFeeder:
         AND Products.nutriscore_grade < '%s' """ \
                     % (category, nutriscore_product)
         self.cursor.execute(query_sub)
-        substitutes = self.cursor.fetchall()
-        substitutes_list = list()
-        for i in substitutes:
-            substitutes_list.append(str(i))
-        substitute = random.sample(substitutes_list, 1)
-        substitute = substitute[0].split(",")
-        return substitute
+        try:
+            substitutes = self.cursor.fetchall()
+            substitutes_list = list()
+            for i in substitutes:
+                substitutes_list.append(str(i))
+            substitute = random.sample(substitutes_list, 1)
+            substitute = substitute[0].split(",")
+            return substitute
+        except ValueError:
+            print("Il n'y a pas de substitut pour votre produit")
 
     # Record the substitute chosen in the database
     # def record_substitutes(self):

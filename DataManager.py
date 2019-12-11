@@ -9,9 +9,7 @@ class DataManager:
     # Initialization of the DataManager
     def __init__(self):
         """Initializing the DataManager"""
-        self.conn = mysql.connector.connect(host="localhost", user="ocr",
-                               password="password", database="OpenFoodFacts",
-                               auth_plugin='mysql_native_password')
+        self.conn = mysql.connector.connect(CONNECTOR)
         self.cursor = self.conn.cursor()
         self.create_categories = CREATE_CATEGORIES
         self.create_products = CREATE_PRODUCTS

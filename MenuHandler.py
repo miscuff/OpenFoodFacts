@@ -27,12 +27,17 @@ class MenuHandler:
                 self.show_category_menu()
             elif ans == "2":
                 print("\n La liste de mes aliments substitués :")
-                self.data_feeder.get_substitutes_list()
+                subs = self.data_feeder.get_substitutes_list()
+                subs_list = list()
+                for i in subs:
+                    subs_list.append(str(i[0]))
+                for count, elt in enumerate(subs_list):
+                    print("{} - {}".format(count + 1, elt))
             elif ans == "3":
                 print("\n Au revoir")
                 self.continue_main_menu = False
             elif ans != "":
-                print("\n 1Ce n'est pas un choix valide")
+                print("\n Ce n'est pas un choix valide")
 
     # Menu to manage the categories
     def show_category_menu(self):
@@ -51,14 +56,14 @@ class MenuHandler:
                 self.continue_category_menu = False
                 self.continue_main_menu = True
             elif ans != "":
-                print("\n2 Ce n'est pas un choix valide")
+                print("\n Ce n'est pas un choix valide")
 
     # Menu to select a catagory
     def choose_category(self):
         while self.continue_choose_category:
             cat_list = self.data_feeder.get_categories()
             for count, element in enumerate(cat_list):
-                print("{} - {} \n".format(count + 1, element))
+                print("{} - {}".format(count + 1, element))
             ans = input("Veuillez choisir une catégorie dans "
                         "la liste ci-dessus")
             ans = int(ans)
@@ -66,9 +71,9 @@ class MenuHandler:
                 print("Vous avez choisi la catégorie : {}".format(cat_list
                                                                 [ans - 1]))
                 category_choose = cat_list[ans - 1]
+                self.show_product_menu(category_choose)
                 self.continue_category_menu = False
                 self.continue_product_menu = True
-                self.show_product_menu(category_choose)
             elif ans != "":
                 print("\nCe n'est pas un choix valide \n")
 
@@ -89,30 +94,35 @@ class MenuHandler:
                 self.continue_choose_category = False
                 self.continue_category_menu = True
             elif ans != "":
-                print("\n 3Ce n'est pas un choix valide")
+                print("\n Ce n'est pas un choix valide")
 
     # Menu to select a product
     def choose_product(self, category):
         while self.continue_choose_product:
             prod_list = self.data_feeder.get_products(category)
-            for count, element in enumerate(prod_list):
-                print("{} - {} \n".format(count + 1, element))
-            ans = input("Veuillez choisir un produit dans la liste ci-dessus")
-            ans = int(ans)
-            if ans in range(0, len(prod_list) + 1):
-                print("Vous avez choisi le produit : {} \n".format(prod_list
-                                                                  [ans - 1]))
-                product_choose = prod_list[ans - 1]
-                nutriscore_produit = self.data_feeder.\
-                    get_product_nutriscore(product_choose)
-                print("Le nutriscore associé à votre produit est de {}"
-                      .format(nutriscore_produit))
+            if prod_list:
+                for count, element in enumerate(prod_list):
+                    print("{} - {}".format(count + 1, element))
+                ans = input("Veuillez choisir un produit dans la liste ci-dessus")
+                ans = int(ans)
+                if ans in range(0, len(prod_list) + 1):
+                    print("Vous avez choisi le produit : {} \n".format(prod_list
+                                                                      [ans - 1]))
+                    product_choose = prod_list[ans - 1]
+                    nutriscore_produit = self.data_feeder.\
+                        get_product_nutriscore(product_choose)
+                    print("Le nutriscore associé à votre produit est de {}"
+                          .format(nutriscore_produit))
+                    self.choose_substitute(category, nutriscore_produit)
+                    self.continue_product_menu = False
+                    self.continue_choose_product = False
+                    self.continue_choose_substitute = True
+                elif ans != "":
+                    print("\n Ce n'est pas un choix valide")
+            else:
+                self.continue_choose_category = True
                 self.continue_product_menu = False
                 self.continue_choose_product = False
-                self.continue_choose_substitute = True
-                self.choose_substitute(category, nutriscore_produit)
-            elif ans != "":
-                print("\n4 Ce n'est pas un choix valide")
 
     # Menu to select a substitute
     def choose_substitute(self, category, nutriscore):
@@ -126,14 +136,16 @@ class MenuHandler:
                       "Magasin : {} \n"
                       "Lien : {} \n".format(sub[0], sub[1], sub[2],
                                             sub[3]))
-                self.continue_choose_substitute = False
                 self.record_substitute(sub[0])
+                self.continue_choose_substitute = False
             else:
                 self.continue_choose_substitute = False
                 self.continue_main_menu = True
 
     # Menu to record the substitute
     def record_substitute(self, product_name):
+        product_name = product_name.replace("""(\'""", "")
+        product_name = product_name.replace("""\'""", "")
         while self.continue_record_substitute:
             ans = input("Voulez vous sauvegarder cet aliment dans "
                         " votre base de données? (Oui/Non) ")
@@ -147,5 +159,5 @@ class MenuHandler:
                 self.continue_record_substitute = False
                 self.continue_main_menu = True
             elif ans != "":
-                print("\n 5Ce n'est pas un choix valide")
+                print("\n Ce n'est pas un choix valide")
 

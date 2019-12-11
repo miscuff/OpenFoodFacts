@@ -19,6 +19,7 @@ class DataFeeder:
         Products.description AS Description,
         Products.store AS Magasin,
         Products.url_product AS Lien
+        Products.nutriscore_grade AS Nutriscore
         FROM Substitutes
         INNER JOIN Products
             ON Substitutes.product_id = Products.id """
@@ -58,8 +59,8 @@ class DataFeeder:
                 where Products.product_name = '%s' """ % product
         self.cursor.execute(query_prod)
         try:
-            product = self.cursor.fetchall()
-            product_nutriscore = str(product[0][0])
+            products = self.cursor.fetchall()
+            product_nutriscore = str(products[0][0])
             return product_nutriscore
         except ValueError:
             print("Il n'y a pas de produit dans cette catégorie")
@@ -89,7 +90,14 @@ class DataFeeder:
             print("Il n'y a pas de substitut pour votre produit")
 
     # Record the substitute chosen in the database
-    # def record_substitutes(self):
+    def record_substitutes(self, product):
+        query_sub = """INSERT INTO Substitutes (product_id)
+         SELECT id
+         FROM Products
+         WHERE Products.product_name = '%s'""" % product
+        self.cursor.execute(query_sub)
+        print("Inserted", self.cursor.rowcount, "row(s) of data.")
+
     def get_data(self):
         try:
             # substitute_list = self.get_substitutes_list()

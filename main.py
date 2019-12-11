@@ -8,7 +8,7 @@ def main():
     # create_table.push_data()
 
     display_menu = MenuHandler()
-    display_menu.show_main_menu(
+    display_menu.show_main_menu()
 
     # show_data = DataFeeder()
     # show_data.get_data()

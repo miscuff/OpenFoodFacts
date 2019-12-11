@@ -127,17 +127,18 @@ class MenuHandler:
                       "Lien : {} \n".format(sub[0], sub[1], sub[2],
                                             sub[3]))
                 self.continue_choose_substitute = False
-                self.record_substitute()
+                self.record_substitute(sub[0])
             else:
                 self.continue_choose_substitute = False
                 self.continue_main_menu = True
 
     # Menu to record the substitute
-    def record_substitute(self):
+    def record_substitute(self, product_name):
         while self.continue_record_substitute:
             ans = input("Voulez vous sauvegarder cet aliment dans "
                         " votre base de données? (Oui/Non) ")
             if ans == "Oui":
+                self.data_feeder.record_substitutes(product_name)
                 print("\n L'aliment a été sauvegardé")
                 self.continue_record_substitute = False
                 self.continue_main_menu = True

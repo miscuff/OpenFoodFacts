@@ -1,6 +1,7 @@
 import mysql.connector
-# import openfoodfacts
+import openfoodfacts
 from queries_sql import *
+from settings import *
 
 
 class DataManager:
@@ -15,6 +16,7 @@ class DataManager:
         self.create_categories = CREATE_CATEGORIES
         self.create_products = CREATE_PRODUCTS
         self.create_substitutes = CREATE_SUBSTITUTES
+        self.category_size = CATEGORY_SIZE
         self.cat_id = []
         self.cat_name = []
 
@@ -45,10 +47,16 @@ class DataManager:
         self.cat_id = self.get_categories()
         self.cat_name = [s.replace('fr:', '') for s in self.cat_id]
         i = 0
-        while i < 5:
-            query_cat = """INSERT INTO Categories (id, name) 
-            VALUES ('%s','%s')""" % (self.cat_id[i], self.cat_name[i])
-            self.cursor.execute(query_cat)
+        while i < self.category_size:
+            try:
+                query_cat = """INSERT INTO Categories (id, name) 
+                VALUES ('%s','%s')""" % (self.cat_id[i], self.cat_name[i])
+                # print("Ajout de la catégorie {} dans la DB"
+                #       .format(self.cat_name[i]))
+                self.cursor.execute(query_cat)
+            except Exception:
+                print("la catégorie {} a déjà été créée "
+                      .format(self.cat_name[i]))
             i += 1
         print("Inserted", self.cursor.rowcount, "row(s) of data.")
 
@@ -65,17 +73,10 @@ class DataManager:
                     """ % (i["id"], "{}".format(j), i["product_name"],
                            i["nutriscore_grade"], i["stores"],
                            self.get_url_product(i["id"]), i["generic_name"])
-                    print("Try :" + j)
                     self.cursor.execute(query_prod)
-                except Exception as e:
-                    # query_prod_exception = """INSERT INTO Products
-                    # (id, category_id, product_name, url_product)
-                    # VALUES ('%s','%s','%s','%s') """ % (i["id"],
-                    # "{}".format(j), i["product_name"], self.get_url_product(i["id"]))
-                    print("One Exception has been caught : {}".format(e))
-                    # self.cursor.execute(query_prod_exception)
+                except:
                     continue
-            print("Inserted", self.cursor.rowcount, "row(s) of data.")
+        print("Inserted", self.cursor.rowcount, "row(s) of data.")
 
     # Build and Return the url of a product from the id
     def get_url_product(self, product_id):
@@ -86,12 +87,15 @@ class DataManager:
     def push_data(self):
         try:
             self.create_table(self.create_categories)
-            #self.insert_categories()
             self.create_table(self.create_products)
-            # self.insert_products()
             self.create_table(self.create_substitutes)
+
+            self.insert_categories()
+            self.insert_products()
+
             self.conn.commit()
-        except:
+        except Exception as e:
+            print("RollBack : {}".format(e))
             self.conn.rollback()
-            print("Error as occurred, Rollback")
+
         self.conn.close()

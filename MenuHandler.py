@@ -35,6 +35,7 @@ class MenuHandler:
                     print("{} - {}".format(count + 1, elt))
             elif ans == "3":
                 print("\n Au revoir")
+                self.data_feeder.quit_database()
                 self.continue_main_menu = False
             elif ans != "":
                 print("\n Ce n'est pas un choix valide")
@@ -71,9 +72,10 @@ class MenuHandler:
                 print("Vous avez choisi la catégorie : {}".format(cat_list
                                                                 [ans - 1]))
                 category_choose = cat_list[ans - 1]
-                self.show_product_menu(category_choose)
                 self.continue_category_menu = False
+                self.continue_choose_category = False
                 self.continue_product_menu = True
+                self.show_product_menu(category_choose)
             elif ans != "":
                 print("\nCe n'est pas un choix valide \n")
 
@@ -91,8 +93,7 @@ class MenuHandler:
                 self.choose_product(category)
             elif ans == "2":
                 self.continue_product_menu = False
-                self.continue_choose_category = False
-                self.continue_category_menu = True
+                self.continue_choose_category = True
             elif ans != "":
                 print("\n Ce n'est pas un choix valide")
 
@@ -103,11 +104,12 @@ class MenuHandler:
             if prod_list:
                 for count, element in enumerate(prod_list):
                     print("{} - {}".format(count + 1, element))
-                ans = input("Veuillez choisir un produit dans la liste ci-dessus")
+                ans = \
+                    input("Veuillez choisir un produit dans la liste ci-dessus")
                 ans = int(ans)
                 if ans in range(0, len(prod_list) + 1):
-                    print("Vous avez choisi le produit : {} \n".format(prod_list
-                                                                      [ans - 1]))
+                    print("Vous avez choisi le produit : {} \n".format(
+                        prod_list[ans - 1]))
                     product_choose = prod_list[ans - 1]
                     nutriscore_produit = self.data_feeder.\
                         get_product_nutriscore(product_choose)
@@ -134,8 +136,10 @@ class MenuHandler:
                 print("Nom : {} \n"
                       "Description : {} \n"
                       "Magasin : {} \n"
-                      "Lien : {} \n".format(sub[0], sub[1], sub[2],
-                                            sub[3]))
+                      "Lien : {} \n".format(sub[0].replace("""(""", ""),
+                                            sub[1],
+                                            sub[2],
+                                            sub[3].replace(""")""", "")))
                 self.record_substitute(sub[0])
                 self.continue_choose_substitute = False
             else:

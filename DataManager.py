@@ -2,6 +2,7 @@ import mysql.connector
 import openfoodfacts
 from queries_sql import *
 from settings import *
+from settings import *
 
 
 class DataManager:
@@ -9,9 +10,11 @@ class DataManager:
     # Initialization of the DataManager
     def __init__(self):
         """Initializing the DataManager"""
-        self.conn = mysql.connector.connect(host="localhost", user="ocr",
-                               password="password", database="OpenFoodFacts",
-                               auth_plugin='mysql_native_password')
+        self.conn = mysql.connector.connect(host=CONNECTOR_HOST,
+                                            user=CONNECTOR_USER,
+                                            password=CONNECTOR_PASSWORD,
+                                            database=CONNECTOR_DATABASE,
+                                            auth_plugin='mysql_native_password')
         self.cursor = self.conn.cursor()
         self.create_categories = CREATE_CATEGORIES
         self.create_products = CREATE_PRODUCTS
@@ -97,5 +100,4 @@ class DataManager:
         except Exception as e:
             print("RollBack : {}".format(e))
             self.conn.rollback()
-
         self.conn.close()

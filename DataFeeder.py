@@ -1,6 +1,5 @@
 import mysql.connector
-import openfoodfacts
-from queries_sql import *
+from settings import *
 import random
 
 
@@ -8,9 +7,12 @@ class DataFeeder:
 
     def __init__(self):
         """Initializing the DataManager"""
-        self.conn = mysql.connector.connect(host="localhost", user="ocr",
-                               password="password", database="OpenFoodFacts",
-                               auth_plugin='mysql_native_password')
+        self.conn = mysql.connector.connect(host=CONNECTOR_HOST,
+                                            user=CONNECTOR_USER,
+                                            password=CONNECTOR_PASSWORD,
+                                            database=CONNECTOR_DATABASE,
+                                            auth_plugin='mysql_native_password')
+        # self.cursor = self.conn.cursor(dictionary=True)
         self.cursor = self.conn.cursor()
 
     # Get the list of substitutes in mysql
@@ -94,3 +96,6 @@ class DataFeeder:
         self.cursor.execute(query_sub)
         print("Inserted", self.cursor.rowcount, "row(s) of data.")
         self.conn.commit()
+
+    def quit_database(self):
+        self.conn.close()

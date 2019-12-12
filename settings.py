@@ -4,5 +4,8 @@
 CATEGORY_SIZE = 50
 
 #Change the connector for MySQL
-CONNECTOR = """host="localhost", user="ocr", password="password", 
-database="OpenFoodFacts", auth_plugin='mysql_native_password'"""
+CONNECTOR_HOST = "localhost"
+CONNECTOR_USER = "ocr"
+CONNECTOR_PASSWORD = "password"
+CONNECTOR_DATABASE = "OpenFoodFacts"
+

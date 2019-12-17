@@ -1,4 +1,5 @@
 import mysql.connector
+from DataManager import *
 from settings import *
 import random
 
@@ -7,13 +8,7 @@ class DataFeeder:
 
     def __init__(self):
         """Initializing the DataManager"""
-        self.conn = mysql.connector.connect(host=CONNECTOR_HOST,
-                                            user=CONNECTOR_USER,
-                                            password=CONNECTOR_PASSWORD,
-                                            database=CONNECTOR_DATABASE,
-                                            auth_plugin='mysql_native_password')
-        # self.cursor = self.conn.cursor(dictionary=True)
-        self.cursor = self.conn.cursor()
+        self.data_manager = DataManager()
 
     # Get the list of substitutes in mysql
     def get_substitutes_list(self):
@@ -21,15 +16,15 @@ class DataFeeder:
         FROM Substitutes
         INNER JOIN Products
             ON Substitutes.product_id = Products.id """
-        self.cursor.execute(query_sub_list)
-        substitutes = self.cursor.fetchall()
+        self.data_manager.cursor.execute(query_sub_list)
+        substitutes = self.data_manager.cursor.fetchall()
         return substitutes
 
     # Get the list of all categories in the database
     def get_categories(self):
         query_cat = """SELECT name FROM Categories"""
-        self.cursor.execute(query_cat)
-        categories = self.cursor.fetchall()
+        self.data_manager.cursor.execute(query_cat)
+        categories = self.data_manager.cursor.fetchall()
         categories_list = list()
         for i in categories:
             categories_list.append(str(i[0]))
@@ -43,9 +38,9 @@ class DataFeeder:
         INNER JOIN Categories
             ON Products.category_id = Categories.id
         where Categories.name = '%s' """ % category
-        self.cursor.execute(query_prod)
+        self.data_manager.cursor.execute(query_prod)
         try:
-            products = self.cursor.fetchall()
+            products = self.data_manager.cursor.fetchall()
             products_list = list()
             for i in products:
                 products_list.append(str(i[0]))
@@ -58,8 +53,8 @@ class DataFeeder:
         query_prod = """SELECT Products.nutriscore_grade
                 FROM Products
                 where Products.product_name = '%s' """ % product
-        self.cursor.execute(query_prod)
-        products = self.cursor.fetchall()
+        self.data_manager.cursor.execute(query_prod)
+        products = self.data_manager.cursor.fetchall()
         product_nutriscore = str(products[0][0])
         return product_nutriscore
 
@@ -75,9 +70,9 @@ class DataFeeder:
         where Categories.name = '%s' 
         AND Products.nutriscore_grade < '%s' """ \
                     % (category, nutriscore_product)
-        self.cursor.execute(query_sub)
+        self.data_manager.cursor.execute(query_sub)
         try:
-            substitutes = self.cursor.fetchall()
+            substitutes = self.data_manager.cursor.fetchall()
             substitutes_list = list()
             for i in substitutes:
                 substitutes_list.append(str(i))
@@ -93,9 +88,19 @@ class DataFeeder:
          SELECT id
          FROM Products
          WHERE Products.product_name = '%s';""" % product
-        self.cursor.execute(query_sub)
-        print("Inserted", self.cursor.rowcount, "row(s) of data.")
-        self.conn.commit()
+        self.data_manager.cursor.execute(query_sub)
+        print("Inserted", self.data_manager.cursor.rowcount, "row(s) of data.")
+        self.data_manager.conn.commit()
 
-    def quit_database(self):
-        self.conn.close()
+    # Get the substitutes recorded
+    def get_record_substitutes(self):
+        subs = self.get_substitutes_list()
+        if subs:
+            print("\n La liste de mes aliments substitués :")
+            subs_list = list()
+            for i in subs:
+                subs_list.append(str(i[0]))
+            for count, elt in enumerate(subs_list):
+                print("{} - {}".format(count + 1, elt))
+        else:
+            print("Vous n'avez pas encore de substitut")

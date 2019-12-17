@@ -2,7 +2,6 @@ import mysql.connector
 import openfoodfacts
 from queries_sql import *
 from settings import *
-from settings import *
 
 
 class DataManager:
@@ -16,12 +15,15 @@ class DataManager:
                                             database=CONNECTOR_DATABASE,
                                             auth_plugin='mysql_native_password')
         self.cursor = self.conn.cursor()
+        self.create_user = CREATE_USER
         self.create_categories = CREATE_CATEGORIES
         self.create_products = CREATE_PRODUCTS
         self.create_substitutes = CREATE_SUBSTITUTES
         self.category_size = CATEGORY_SIZE
         self.cat_id = []
         self.cat_name = []
+
+    # Create user
 
     # Create table from a specify table
     def create_table(self, table):
@@ -48,20 +50,23 @@ class DataManager:
     # Insert 5 categories in the MySQL DataBase
     def insert_categories(self):
         self.cat_id = self.get_categories()
-        self.cat_name = [s.replace('fr:', '') for s in self.cat_id]
-        i = 0
-        while i < self.category_size:
-            try:
-                query_cat = """INSERT INTO Categories (id, name) 
-                VALUES ('%s','%s')""" % (self.cat_id[i], self.cat_name[i])
-                # print("Ajout de la catégorie {} dans la DB"
-                #       .format(self.cat_name[i]))
-                self.cursor.execute(query_cat)
-            except Exception:
-                print("la catégorie {} a déjà été créée "
-                      .format(self.cat_name[i]))
-            i += 1
-        print("Inserted", self.cursor.rowcount, "row(s) of data.")
+        if not self.get_id_categories():
+            self.cat_name = [s.replace('fr:', '') for s in self.cat_id]
+            i = 0
+            while i < self.category_size:
+                try:
+                    query_cat = """INSERT INTO Categories (id, name) 
+                    VALUES ('%s','%s')""" % (self.cat_id[i], self.cat_name[i])
+                    # print("Ajout de la catégorie {} dans la DB"
+                    #       .format(self.cat_name[i]))
+                    self.cursor.execute(query_cat)
+                except:
+                    continue
+                i += 1
+            print("Inserted", self.cursor.rowcount, "row(s) of data.")
+            self.insert_products()
+        else:
+            print("Votre base est a jour")
 
     # Insert all the products associate to the category in the MySQL DB
     def insert_products(self):
@@ -87,17 +92,36 @@ class DataManager:
         return url
 
     # Call the functions and manage the MySQL DB
-    def push_data(self):
+    def create_tables(self):
         try:
             self.create_table(self.create_categories)
             self.create_table(self.create_products)
             self.create_table(self.create_substitutes)
-
-            self.insert_categories()
-            self.insert_products()
-
             self.conn.commit()
         except Exception as e:
             print("RollBack : {}".format(e))
             self.conn.rollback()
+
+    def insert_data(self):
+        try:
+            self.insert_categories()
+            self.conn.commit()
+        except Exception as e_cat:
+            print("RollBack : {}".format(e_cat))
+            self.conn.rollback()
+
+    def reinitialize_base(self):
+        query_sub = "DROP TABLE Substitutes"
+        query_prod = "DROP TABLE Products"
+        query_cat = "DROP TABLE Categories"
+        try:
+            self.cursor.execute(query_sub)
+            self.cursor.execute(query_prod)
+            self.cursor.execute(query_cat)
+            self.conn.commit()
+        except Exception as e:
+            print("RollBack : {}".format(e))
+            self.conn.rollback()
+
+    def quit_database(self):
         self.conn.close()

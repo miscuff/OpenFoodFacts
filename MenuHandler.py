@@ -1,17 +1,18 @@
 from DataFeeder import *
+from DataManager import *
+import sys
 
 class MenuHandler:
 
     # Initialisation of the Boolean for the different menus
     def __init__(self):
         self.continue_main_menu = True
-        self.continue_category_menu = True
-        self.continue_product_menu = True
         self.continue_choose_category = True
         self.continue_choose_product = True
         self.continue_choose_substitute = True
         self.continue_record_substitute = True
         self.data_feeder = DataFeeder()
+        self.data_manager = DataManager()
 
     # Starting menu
     def show_main_menu(self):
@@ -19,30 +20,31 @@ class MenuHandler:
             print("""
             1.Quel aliment souhaitez-vous remplacer ?
             2.Retrouver mes aliments substitués
-            3.Exit/Quit
+            3.Réinitialiser la base de données
+            4.Exit/Quit
             """)
             ans = input("Que voulez-vous faire? ")
             if ans == "1":
-                self.continue_category_menu = True
                 self.show_category_menu()
             elif ans == "2":
-                print("\n La liste de mes aliments substitués :")
-                subs = self.data_feeder.get_substitutes_list()
-                subs_list = list()
-                for i in subs:
-                    subs_list.append(str(i[0]))
-                for count, elt in enumerate(subs_list):
-                    print("{} - {}".format(count + 1, elt))
+                self.data_feeder.get_record_substitutes()
+                self.show_main_menu()
             elif ans == "3":
+                self.data_manager.reinitialize_base()
+                print("La base a été réinitialisée")
+                self.data_manager.create_tables()
+                self.data_manager.insert_data()
+                self.show_main_menu()
+            elif ans == "4":
                 print("\n Au revoir")
-                self.data_feeder.quit_database()
-                self.continue_main_menu = False
+                self.data_manager.quit_database()
+                sys.exit()
             elif ans != "":
                 print("\n Ce n'est pas un choix valide")
 
     # Menu to manage the categories
     def show_category_menu(self):
-        while self.continue_category_menu:
+        while True:
             print("""
             1.Sélectionner une catégorie
             2.Retourner au menu principal
@@ -54,8 +56,7 @@ class MenuHandler:
                 self.continue_choose_category = True
                 self.choose_category()
             elif ans == "2":
-                self.continue_category_menu = False
-                self.continue_main_menu = True
+                return
             elif ans != "":
                 print("\n Ce n'est pas un choix valide")
 
@@ -72,16 +73,13 @@ class MenuHandler:
                 print("Vous avez choisi la catégorie : {}".format(cat_list
                                                                 [ans - 1]))
                 category_choose = cat_list[ans - 1]
-                self.continue_category_menu = False
-                self.continue_choose_category = False
-                self.continue_product_menu = True
                 self.show_product_menu(category_choose)
             elif ans != "":
                 print("\nCe n'est pas un choix valide \n")
 
     # Menu to manage the products
     def show_product_menu(self, category):
-        while self.continue_product_menu:
+        while True:
             print("""\n
             1.Sélectionner un produit
             2.Retourner à la liste des catégories
@@ -92,8 +90,7 @@ class MenuHandler:
                 self.continue_choose_product = True
                 self.choose_product(category)
             elif ans == "2":
-                self.continue_product_menu = False
-                self.continue_choose_category = True
+                return
             elif ans != "":
                 print("\n Ce n'est pas un choix valide")
 
@@ -116,7 +113,6 @@ class MenuHandler:
                     print("Le nutriscore associé à votre produit est de {}"
                           .format(nutriscore_produit))
                     self.choose_substitute(category, nutriscore_produit)
-                    self.continue_product_menu = False
                     self.continue_choose_product = False
                     self.continue_choose_substitute = True
                 elif ans != "":
@@ -155,13 +151,15 @@ class MenuHandler:
                         " votre base de données? (Oui/Non) ")
             if ans == "Oui":
                 self.data_feeder.record_substitutes(product_name)
-                print("\n L'aliment a été sauvegardé")
+                print("\nL'aliment a été sauvegardé")
                 self.continue_record_substitute = False
                 self.continue_main_menu = True
+                self.show_main_menu()
             elif ans == "Non":
-                print("\n L'aliment n'a pas été sauvegardé")
+                print("\nL'aliment n'a pas été sauvegardé")
                 self.continue_record_substitute = False
                 self.continue_main_menu = True
+                self.show_main_menu()
             elif ans != "":
-                print("\n Ce n'est pas un choix valide")
+                print("\nCe n'est pas un choix valide")
 

@@ -1,4 +1,5 @@
 from DataFeeder import *
+from DataManager import *
 
 class MenuHandler:
 
@@ -12,14 +13,17 @@ class MenuHandler:
         self.continue_choose_substitute = True
         self.continue_record_substitute = True
         self.data_feeder = DataFeeder()
+        self.data_manager = DataManager()
 
     # Starting menu
     def show_main_menu(self):
         while self.continue_main_menu:
+            self.data_manager.push_data()
             print("""
             1.Quel aliment souhaitez-vous remplacer ?
             2.Retrouver mes aliments substitués
-            3.Exit/Quit
+            3.Réinitialiser la base de données
+            4.Exit/Quit
             """)
             ans = input("Que voulez-vous faire? ")
             if ans == "1":
@@ -33,9 +37,14 @@ class MenuHandler:
                     subs_list.append(str(i[0]))
                 for count, elt in enumerate(subs_list):
                     print("{} - {}".format(count + 1, elt))
+                self.show_main_menu()
             elif ans == "3":
+                self.data_manager.reinitialize_base()
+                print("La base a été réinitialisée")
+                self.show_main_menu()
+            elif ans == "4":
                 print("\n Au revoir")
-                self.data_feeder.quit_database()
+                self.data_manager.quit_database()
                 self.continue_main_menu = False
             elif ans != "":
                 print("\n Ce n'est pas un choix valide")

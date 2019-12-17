@@ -2,7 +2,6 @@ import mysql.connector
 import openfoodfacts
 from queries_sql import *
 from settings import *
-from settings import *
 
 
 class DataManager:
@@ -24,7 +23,7 @@ class DataManager:
         self.cat_name = []
 
     # Create table from a specify table
-    def create_table(self, table):
+    def create_table(self, *table):
         self.cursor.execute(table)
 
     # Return all the french categories in openfoodfacts database
@@ -57,9 +56,8 @@ class DataManager:
                 # print("Ajout de la catégorie {} dans la DB"
                 #       .format(self.cat_name[i]))
                 self.cursor.execute(query_cat)
-            except Exception:
-                print("la catégorie {} a déjà été créée "
-                      .format(self.cat_name[i]))
+            except:
+                continue
             i += 1
         print("Inserted", self.cursor.rowcount, "row(s) of data.")
 
@@ -89,9 +87,8 @@ class DataManager:
     # Call the functions and manage the MySQL DB
     def push_data(self):
         try:
-            self.create_table(self.create_categories)
-            self.create_table(self.create_products)
-            self.create_table(self.create_substitutes)
+            self.create_table(self.create_categories, self.create_products,
+                              self.create_substitutes)
 
             self.insert_categories()
             self.insert_products()
@@ -100,4 +97,29 @@ class DataManager:
         except Exception as e:
             print("RollBack : {}".format(e))
             self.conn.rollback()
+
+    def reinitialize_base(self):
+        query_sub = "DROP TABLE Substitutes"
+        query_prod = "DROP TABLE Products"
+        query_cat = "DROP TABLE Categories"
+        try:
+            self.cursor.execute(query_sub)
+            self.conn.commit()
+        except Exception as e_sub:
+            print("RollBack : {}".format(e_sub))
+            self.conn.rollback()
+        try:
+            self.cursor.execute(query_prod)
+            self.conn.commit()
+        except Exception as e_prod:
+            print("RollBack : {}".format(e_prod))
+            self.conn.rollback()
+        try:
+            self.cursor.execute(query_cat)
+            self.conn.commit()
+        except Exception as e_cat:
+            print("RollBack : {}".format(e_cat))
+            self.conn.rollback()
+
+    def quit_database(self):
         self.conn.close()

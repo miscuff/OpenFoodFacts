@@ -96,6 +96,6 @@ class DataFeeder:
         self.cursor.execute(query_sub)
         print("Inserted", self.cursor.rowcount, "row(s) of data.")
         self.conn.commit()
-
-    def quit_database(self):
         self.conn.close()
+
+

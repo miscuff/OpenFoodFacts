@@ -1,10 +1,11 @@
 # OpenFoodFacts
+pip3 install -r requirements.txt
 
 Installation library OpenFoodFacts :
-sudo pip install git+https://github.com/openfoodfacts/openfoodfacts-python
+sudo pip3 install git+https://github.com/openfoodfacts/openfoodfacts-python
 
 Installation MySQL
-Pour Python3 : pip3 install mysql-connector-python 
+Pour Python3 : sudo pip3 install mysql-connector-python 
 Modifier le paramètrage dans le fichier settings.py pour vous connecter à votre DB MySQL
 
 Pour lancer le programme : Exécuter le Main()

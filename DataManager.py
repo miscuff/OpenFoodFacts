@@ -16,6 +16,7 @@ class DataManager:
                                             auth_plugin='mysql_native_password')
         self.cursor = self.conn.cursor()
         self.create_user = CREATE_USER
+        self.create_db = CREATE_DB
         self.create_categories = CREATE_CATEGORIES
         self.create_products = CREATE_PRODUCTS
         self.create_substitutes = CREATE_SUBSTITUTES
@@ -108,19 +109,6 @@ class DataManager:
             self.conn.commit()
         except Exception as e_cat:
             print("RollBack : {}".format(e_cat))
-            self.conn.rollback()
-
-    def reinitialize_base(self):
-        query_sub = "DROP TABLE Substitutes"
-        query_prod = "DROP TABLE Products"
-        query_cat = "DROP TABLE Categories"
-        try:
-            self.cursor.execute(query_sub)
-            self.cursor.execute(query_prod)
-            self.cursor.execute(query_cat)
-            self.conn.commit()
-        except Exception as e:
-            print("RollBack : {}".format(e))
             self.conn.rollback()
 
     def quit_database(self):

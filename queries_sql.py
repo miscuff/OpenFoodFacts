@@ -1,18 +1,21 @@
 """Queries used for the program"""
 from settings import *
 
-#Create User
+# Create User
 CREATE_USER = """
 CREATE USER IF NOT EXISTS 
-'%s'@'%s' IDENTIFIED BY '%s'; """
+'%s'@'%s' IDENTIFIED BY '%s'; """ % (CONNECTOR_USER, CONNECTOR_HOST,
+                                     CONNECTOR_PASSWORD)
 
 # Grant Privileges to the user
 GRANT_PRIV = """
-GRANT ALL PRIVILEGES ON '%s'.* TO '%s'@'%s';"""
+GRANT ALL PRIVILEGES ON %s.* TO '%s'@'%s';""" % (CONNECTOR_DATABASE,
+                                                   CONNECTOR_USER,
+                                                   CONNECTOR_HOST)
 
 # Create DataBase
 CREATE_DB = """
-CREATE DATABASE IF NOT EXISTS OpenFoodFacts"""
+CREATE DATABASE IF NOT EXISTS %s;""" % CONNECTOR_DATABASE
 
 # Create table Categories
 CREATE_CATEGORIES = """ 

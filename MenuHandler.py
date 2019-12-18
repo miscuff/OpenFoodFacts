@@ -1,5 +1,6 @@
 from DataFeeder import *
 from DataManager import *
+from DBCreator import *
 import sys
 
 class MenuHandler:
@@ -11,6 +12,8 @@ class MenuHandler:
         self.continue_choose_product = True
         self.continue_choose_substitute = True
         self.continue_record_substitute = True
+        self.continue_cat_menu = True
+        self.continue_prod_menu = True
         self.data_feeder = DataFeeder()
         self.data_manager = DataManager()
 
@@ -25,13 +28,19 @@ class MenuHandler:
             """)
             ans = input("Que voulez-vous faire? ")
             if ans == "1":
+                self.continue_cat_menu = True
                 self.show_category_menu()
             elif ans == "2":
                 self.data_feeder.get_record_substitutes()
                 self.show_main_menu()
             elif ans == "3":
-                self.data_manager.reinitialize_base()
+                db_creator = DBCreator()
+                self.data_manager.quit_database()
+                db_creator.delete_base()
                 print("La base a été réinitialisée")
+                db_creator.create_db()
+                db_creator.quit_database()
+                self.data_manager = DataManager()
                 self.data_manager.create_tables()
                 self.data_manager.insert_data()
                 self.show_main_menu()
@@ -44,7 +53,7 @@ class MenuHandler:
 
     # Menu to manage the categories
     def show_category_menu(self):
-        while True:
+        while self.continue_cat_menu:
             print("""
             1.Sélectionner une catégorie
             2.Retourner au menu principal
@@ -53,6 +62,7 @@ class MenuHandler:
             if ans == "1":
                 print("\n La liste des catégories:")
                 self.continue_main_menu = False
+                self.continue_cat_menu = False
                 self.continue_choose_category = True
                 self.choose_category()
             elif ans == "2":
@@ -73,13 +83,14 @@ class MenuHandler:
                 print("Vous avez choisi la catégorie : {}".format(cat_list
                                                                 [ans - 1]))
                 category_choose = cat_list[ans - 1]
+                self.continue_prod_menu = True
                 self.show_product_menu(category_choose)
             elif ans != "":
                 print("\nCe n'est pas un choix valide \n")
 
     # Menu to manage the products
     def show_product_menu(self, category):
-        while True:
+        while self.continue_prod_menu:
             print("""\n
             1.Sélectionner un produit
             2.Retourner à la liste des catégories
@@ -87,10 +98,12 @@ class MenuHandler:
             ans = input("Que voulez-vous faire?")
             if ans == "1":
                 self.continue_choose_category = False
+                self.continue_prod_menu = False
                 self.continue_choose_product = True
                 self.choose_product(category)
             elif ans == "2":
-                return
+                self.continue_cat_menu = True
+                self.show_category_menu()
             elif ans != "":
                 print("\n Ce n'est pas un choix valide")
 
@@ -119,7 +132,6 @@ class MenuHandler:
                     print("\n Ce n'est pas un choix valide")
             else:
                 self.continue_choose_category = True
-                self.continue_product_menu = False
                 self.continue_choose_product = False
 
     # Menu to select a substitute
@@ -136,8 +148,9 @@ class MenuHandler:
                                             sub[1],
                                             sub[2],
                                             sub[3].replace(""")""", "")))
-                self.record_substitute(sub[0])
                 self.continue_choose_substitute = False
+                self.continue_record_substitute = True
+                self.record_substitute(sub[0])
             else:
                 self.continue_choose_substitute = False
                 self.continue_main_menu = True

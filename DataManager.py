@@ -24,8 +24,6 @@ class DataManager:
         self.cat_id = []
         self.cat_name = []
 
-    # Create user
-
     # Create table from a specify table
     def create_table(self, table):
         self.cursor.execute(table)
@@ -64,7 +62,6 @@ class DataManager:
                 except:
                     continue
                 i += 1
-            print("Inserted", self.cursor.rowcount, "row(s) of data.")
             self.insert_products()
         else:
             print("Votre base est a jour")
@@ -85,7 +82,6 @@ class DataManager:
                     self.cursor.execute(query_prod)
                 except:
                     continue
-        print("Inserted", self.cursor.rowcount, "row(s) of data.")
 
     # Build and Return the url of a product from the id
     def get_url_product(self, product_id):
@@ -103,6 +99,7 @@ class DataManager:
             print("RollBack : {}".format(e))
             self.conn.rollback()
 
+    # Insert data in the tables Categories and Products
     def insert_data(self):
         try:
             self.insert_categories()
@@ -111,5 +108,7 @@ class DataManager:
             print("RollBack : {}".format(e_cat))
             self.conn.rollback()
 
+    # Close the connector mysql
     def quit_database(self):
         self.conn.close()
+

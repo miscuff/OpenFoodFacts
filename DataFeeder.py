@@ -1,6 +1,4 @@
-import mysql.connector
 from DataManager import *
-from settings import *
 import random
 
 
@@ -49,6 +47,7 @@ class DataFeeder:
         except ValueError:
             print("Il n'y a pas de produits dans cette catégorie")
 
+    # Get the nutriscore of a product
     def get_product_nutriscore(self, product):
         query_prod = """SELECT Products.nutriscore_grade
                 FROM Products
@@ -77,7 +76,7 @@ class DataFeeder:
             for i in substitutes:
                 substitutes_list.append(str(i))
             substitute = random.sample(substitutes_list, 1)
-            substitute = substitute[0].split(",")
+            substitute = substitute[0].split(""", '""")
             return substitute
         except ValueError:
             print("Il n'y a pas de substitut pour votre produit")
@@ -104,3 +103,6 @@ class DataFeeder:
                 print("{} - {}".format(count + 1, elt))
         else:
             print("Vous n'avez pas encore de substitut")
+
+    def quit_database(self):
+        self.data_manager.conn.close()

@@ -1,7 +1,9 @@
+"""Class to display all menus used in the program"""
 from DataFeeder import *
 from DataManager import *
 from DBCreator import *
 import sys
+
 
 class MenuHandler:
 
@@ -15,7 +17,6 @@ class MenuHandler:
         self.continue_cat_menu = True
         self.continue_prod_menu = True
         self.data_feeder = DataFeeder()
-        self.data_manager = DataManager()
 
     # Starting menu
     def show_main_menu(self):
@@ -29,24 +30,25 @@ class MenuHandler:
             ans = input("Que voulez-vous faire? ")
             if ans == "1":
                 self.continue_cat_menu = True
+                self.continue_main_menu = False
                 self.show_category_menu()
             elif ans == "2":
                 self.data_feeder.get_record_substitutes()
-                self.show_main_menu()
             elif ans == "3":
+                self.data_feeder.quit_database()
                 db_creator = DBCreator()
-                self.data_manager.quit_database()
                 db_creator.delete_base()
                 print("La base a été réinitialisée")
                 db_creator.create_db()
                 db_creator.quit_database()
-                self.data_manager = DataManager()
-                self.data_manager.create_tables()
-                self.data_manager.insert_data()
-                self.show_main_menu()
+                data_manager = DataManager()
+                data_manager.create_tables()
+                data_manager.insert_data()
+                data_manager.quit_database()
+                self.data_feeder = DataFeeder()
             elif ans == "4":
+                self.data_feeder.quit_database()
                 print("\n Au revoir")
-                self.data_manager.quit_database()
                 sys.exit()
             elif ans != "":
                 print("\n Ce n'est pas un choix valide")
@@ -66,7 +68,8 @@ class MenuHandler:
                 self.continue_choose_category = True
                 self.choose_category()
             elif ans == "2":
-                return
+                self.continue_main_menu = True
+                self.show_main_menu()
             elif ans != "":
                 print("\n Ce n'est pas un choix valide")
 
@@ -84,6 +87,7 @@ class MenuHandler:
                                                                 [ans - 1]))
                 category_choose = cat_list[ans - 1]
                 self.continue_prod_menu = True
+                self.continue_choose_category = False
                 self.show_product_menu(category_choose)
             elif ans != "":
                 print("\nCe n'est pas un choix valide \n")
@@ -97,7 +101,6 @@ class MenuHandler:
             """)
             ans = input("Que voulez-vous faire?")
             if ans == "1":
-                self.continue_choose_category = False
                 self.continue_prod_menu = False
                 self.continue_choose_product = True
                 self.choose_product(category)
@@ -125,14 +128,15 @@ class MenuHandler:
                         get_product_nutriscore(product_choose)
                     print("Le nutriscore associé à votre produit est de {}"
                           .format(nutriscore_produit))
-                    self.choose_substitute(category, nutriscore_produit)
                     self.continue_choose_product = False
                     self.continue_choose_substitute = True
+                    self.choose_substitute(category, nutriscore_produit)
                 elif ans != "":
                     print("\n Ce n'est pas un choix valide")
             else:
                 self.continue_choose_category = True
                 self.continue_choose_product = False
+                self.choose_category()
 
     # Menu to select a substitute
     def choose_substitute(self, category, nutriscore):
@@ -144,10 +148,10 @@ class MenuHandler:
                 print("Nom : {} \n"
                       "Description : {} \n"
                       "Magasin : {} \n"
-                      "Lien : {} \n".format(sub[0].replace("""(""", ""),
-                                            sub[1],
-                                            sub[2],
-                                            sub[3].replace(""")""", "")))
+                      "Lien : {} \n".format(sub[0].replace("""('""", ""),
+                                            sub[1].replace("'", ""),
+                                            sub[2].replace("'", ""),
+                                            sub[3].replace("""')""", "")))
                 self.continue_choose_substitute = False
                 self.continue_record_substitute = True
                 self.record_substitute(sub[0])

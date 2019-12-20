@@ -1,7 +1,7 @@
 """Settings used for the program"""
 
 # Choose the number of categories in the DB MySQL
-CATEGORY_SIZE = 10
+CATEGORY_SIZE = 30
 
 # Change the connector to create a new user
 HOST_ROOT = "localhost"

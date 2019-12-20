@@ -12,7 +12,6 @@ GRANT_PRIV = """
 GRANT ALL PRIVILEGES ON %s.* TO '%s'@'%s';""" % (CONNECTOR_DATABASE,
                                                    CONNECTOR_USER,
                                                    CONNECTOR_HOST)
-
 # Create DataBase
 CREATE_DB = """
 CREATE DATABASE IF NOT EXISTS %s;""" % CONNECTOR_DATABASE
@@ -25,7 +24,6 @@ CREATE TABLE IF NOT EXISTS Categories (
    PRIMARY KEY(id)
    ) 
 ENGINE=INNODB;"""
-
 
 # Create table Products
 CREATE_PRODUCTS = """ 

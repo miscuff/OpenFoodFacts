@@ -1,16 +1,23 @@
 # OpenFoodFacts
+
+##To use Requirements
 pip3 install -r requirements.txt
 
-Installation library OpenFoodFacts :
+###We will install
+1- Library OpenFoodFacts
 sudo pip3 install git+https://github.com/openfoodfacts/openfoodfacts-python
 
-Installation MySQL
-Pour Python3 : sudo pip3 install mysql-connector-python 
-Modifier le paramètrage dans le fichier settings.py pour vous connecter à votre DB MySQL
+2- MySQL
+sudo pip3 install mysql-connector-python 
 
-Pour lancer le programme : Exécuter le Main()
+###Manage settings
+Change the parameters in the file settings.py
 
-Le programme est composé de 3 classes :
-- DataManager : Récupère les données de la base OpenFoodFacts et les insère dans votre base SQL
-- DataFeeder : Récupère les données de votre base SQL pour alimenter le programme
-- MenuHandler : Gère IHM pour accèder à ses données et interagir avec le programme
+##How to launch the programme : 
+Execute the Main()
+
+##This program is composed of 4 Classes:
+- DBCreator : Create the user and the DB
+- DataManager : Get the data from OpenFoodFacts 
+- DataFeeder : Get the data in your DB MySQL
+- MenuHandler : Manage the IHM in the console

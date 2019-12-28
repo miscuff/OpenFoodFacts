@@ -11,7 +11,8 @@ class DBCreator:
         self.conn = mysql.connector.connect(host=HOST_ROOT,
                                             user=CONNECTOR_ROOT,
                                             password=PASSWORD_ROOT,
-                                            auth_plugin='mysql_native_password')
+                                            auth_plugin='mysql_'
+                                                        'native_password')
         self.cursor = self.conn.cursor()
 
     # Create a new user for the database

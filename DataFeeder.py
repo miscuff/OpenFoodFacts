@@ -65,8 +65,8 @@ class DataFeeder:
         Products.url_product AS Lien
         FROM Products
         INNER JOIN Categories
-            ON Products.category_id = Categories.id 
-        where Categories.name = '%s' 
+            ON Products.category_id = Categories.id
+        where Categories.name = '%s'
         AND Products.nutriscore_grade < '%s' """ \
                     % (category, nutriscore_product)
         self.data_manager.cursor.execute(query_sub)

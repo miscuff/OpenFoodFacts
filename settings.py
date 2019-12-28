@@ -13,4 +13,3 @@ CONNECTOR_HOST = "localhost"
 CONNECTOR_USER = "ocr"
 CONNECTOR_PASSWORD = "password"
 CONNECTOR_DATABASE = "OpenFoodFacts"
-

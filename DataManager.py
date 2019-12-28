@@ -13,7 +13,8 @@ class DataManager:
                                             user=CONNECTOR_USER,
                                             password=CONNECTOR_PASSWORD,
                                             database=CONNECTOR_DATABASE,
-                                            auth_plugin='mysql_native_password')
+                                            auth_plugin='mysql_'
+                                                        'native_password')
         self.cursor = self.conn.cursor()
         self.create_user = CREATE_USER
         self.create_db = CREATE_DB
@@ -54,10 +55,8 @@ class DataManager:
             i = 0
             while i < self.category_size:
                 try:
-                    query_cat = """INSERT INTO Categories (id, name) 
+                    query_cat = """INSERT INTO Categories (id, name)
                     VALUES ('%s','%s')""" % (self.cat_id[i], self.cat_name[i])
-                    # print("Ajout de la catégorie {} dans la DB"
-                    #       .format(self.cat_name[i]))
                     self.cursor.execute(query_cat)
                 except:
                     continue
@@ -73,9 +72,9 @@ class DataManager:
             products_list = openfoodfacts.products.get_by_category(j)
             for i in products_list:
                 try:
-                    query_prod = """INSERT INTO Products (id, category_id, 
-                    product_name, nutriscore_grade, store, url_product, 
-                    description) VALUES ('%s','%s','%s','%s','%s','%s','%s') 
+                    query_prod = """INSERT INTO Products (id, category_id,
+                    product_name, nutriscore_grade, store, url_product,
+                    description) VALUES ('%s','%s','%s','%s','%s','%s','%s')
                     """ % (i["id"], "{}".format(j), i["product_name"],
                            i["nutriscore_grade"], i["stores"],
                            self.get_url_product(i["id"]), i["generic_name"])
@@ -111,4 +110,3 @@ class DataManager:
     # Close the connector mysql
     def quit_database(self):
         self.conn.close()
-

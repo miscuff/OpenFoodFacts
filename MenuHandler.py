@@ -83,8 +83,8 @@ class MenuHandler:
                         "la liste ci-dessus")
             ans = int(ans)
             if ans in range(0, len(cat_list) + 1):
-                print("Vous avez choisi la catégorie : {}".format(cat_list
-                                                                [ans - 1]))
+                print("Vous avez choisi la catégorie : "
+                      "{}".format(cat_list[ans - 1]))
                 category_choose = cat_list[ans - 1]
                 self.continue_prod_menu = True
                 self.continue_choose_category = False
@@ -118,7 +118,8 @@ class MenuHandler:
                 for count, element in enumerate(prod_list):
                     print("{} - {}".format(count + 1, element))
                 ans = \
-                    input("Veuillez choisir un produit dans la liste ci-dessus")
+                    input("Veuillez choisir un produit dans la "
+                          "liste ci-dessus")
                 ans = int(ans)
                 if ans in range(0, len(prod_list) + 1):
                     print("Vous avez choisi le produit : {} \n".format(
@@ -179,4 +180,3 @@ class MenuHandler:
                 self.show_main_menu()
             elif ans != "":
                 print("\nCe n'est pas un choix valide")
-

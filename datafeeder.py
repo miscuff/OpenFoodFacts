@@ -1,5 +1,6 @@
-from DataManager import *
 import random
+
+from datamanager import DataManager
 
 
 class DataFeeder:
@@ -8,18 +9,18 @@ class DataFeeder:
         """Initializing the DataManager"""
         self.data_manager = DataManager()
 
-    # Get the list of substitutes in mysql
     def get_substitutes_list(self):
+        """Get the list of substitutes in mysql"""
         query_sub_list = """SELECT Products.product_name AS nom
         FROM Substitutes
         INNER JOIN Products
-            ON Substitutes.product_id = Products.id """
+            ON Substitutes.substitute_id = Products.id """
         self.data_manager.cursor.execute(query_sub_list)
         substitutes = self.data_manager.cursor.fetchall()
         return substitutes
 
-    # Get the list of all categories in the database
     def get_categories(self):
+        """Get the list of all categories in the database"""
         query_cat = """SELECT name FROM Categories"""
         self.data_manager.cursor.execute(query_cat)
         categories = self.data_manager.cursor.fetchall()
@@ -29,8 +30,8 @@ class DataFeeder:
         categories_list = random.sample(categories_list, 10)
         return categories_list
 
-    # Get the list of all products for a category
     def get_products(self, category):
+        """Get the list of all products for a category"""
         query_prod = """SELECT Products.product_name AS nom
         FROM Products
         INNER JOIN Categories
@@ -47,8 +48,8 @@ class DataFeeder:
         except ValueError:
             print("Il n'y a pas de produits dans cette catégorie")
 
-    # Get the nutriscore of a product
     def get_product_nutriscore(self, product):
+        """Get the nutriscore of a product"""
         query_prod = """SELECT Products.nutriscore_grade
                 FROM Products
                 where Products.product_name = '%s' """ % product
@@ -57,8 +58,8 @@ class DataFeeder:
         product_nutriscore = str(products[0][0])
         return product_nutriscore
 
-    # The substitutes are the products with a better nustricore grade
     def get_substitutes(self, category, nutriscore_product):
+        """The substitutes are the products with a better nustricore grade"""
         query_sub = """SELECT Products.product_name AS nom,
         Products.description AS Description,
         Products.store AS Magasin,
@@ -81,18 +82,22 @@ class DataFeeder:
         except ValueError:
             print("Il n'y a pas de substitut pour votre produit")
 
-    # Record the substitute chosen in the database
-    def record_substitutes(self, product):
-        query_sub = """INSERT INTO Substitutes (product_id)
-         SELECT id
+    def record_substitutes(self, sub_name, product_name):
+        """Record the substitute chosen in the databaseDE"""
+        query_sub = """INSERT INTO Substitutes (product_id, substitute_id)
+         VALUES (
+         (SELECT id
          FROM Products
-         WHERE Products.product_name = '%s';""" % product
+         WHERE Products.product_name = '%s'),
+         (SELECT id
+         FROM Products
+         WHERE Products.product_name = '%s'));""" % (product_name, sub_name)
         self.data_manager.cursor.execute(query_sub)
         print("Inserted", self.data_manager.cursor.rowcount, "row(s) of data.")
         self.data_manager.conn.commit()
 
-    # Get the substitutes recorded
     def get_record_substitutes(self):
+        """Get the substitutes recorded"""
         subs = self.get_substitutes_list()
         if subs:
             print("\n La liste de mes aliments substitués :")
@@ -105,4 +110,5 @@ class DataFeeder:
             print("Vous n'avez pas encore de substitut")
 
     def quit_database(self):
+        """Close the connector mysql"""
         self.data_manager.conn.close()

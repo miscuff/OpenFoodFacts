@@ -6,11 +6,11 @@ other product with a better nutriscore
 It needs to launch this instructions below in the terminal 
 
 ### Requirements
-pip3 install -r requirements.txt
-Requirements will install : MySQL conector python 8.0.18
+**pip3 install -r requirements.txt**
 
-### library OpenFoodFacts
-sudo pip3 install git+https://github.com/openfoodfacts/openfoodfacts-python
+Requirements will install :
+* MySQL conector python 8.0.18
+* git+https://github.com/openfoodfacts/openfoodfacts-python
 
 ### Manage settings
 Change the parameters in the file settings.py

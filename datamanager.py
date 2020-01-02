@@ -1,14 +1,17 @@
-import mysql.connector
-import openfoodfacts
-from queries_sql import *
-from settings import *
+import mysql.connector  # Import after installation requirements.txt
+import openfoodfacts  # Import after installation requirements.txt
+
+from queries_sql import (CREATE_USER, CREATE_DB, CREATE_SUBSTITUTES,
+                         CREATE_PRODUCTS, CREATE_CATEGORIES)
+
+from settings import (CONNECTOR_PASSWORD, CONNECTOR_DATABASE, CONNECTOR_HOST,
+                      CONNECTOR_USER, CATEGORY_SIZE)
 
 
 class DataManager:
 
-    # Initialization of the DataManager
     def __init__(self):
-        """Initializing the DataManager"""
+        """Initialization of the DataManager"""
         self.conn = mysql.connector.connect(host=CONNECTOR_HOST,
                                             user=CONNECTOR_USER,
                                             password=CONNECTOR_PASSWORD,
@@ -25,12 +28,12 @@ class DataManager:
         self.cat_id = []
         self.cat_name = []
 
-    # Create table from a specify table
     def create_table(self, table):
+        """Create table from a specify table"""
         self.cursor.execute(table)
 
-    # Return all the french categories in openfoodfacts database
     def get_categories(self):
+        """Return all the french categories in openfoodfacts database"""
         categories = openfoodfacts.facets.get_categories()
         category_id = list()
         for i in categories:
@@ -38,8 +41,8 @@ class DataManager:
                 category_id.append(i["id"])
         return category_id
 
-    # Transform a tuple in a list and return it
     def get_id_categories(self):
+        """Transform a tuple in a list and return it"""
         self.cursor.execute("""SELECT id FROM Categories""")
         products = self.cursor.fetchall()
         id_categories = list()
@@ -47,8 +50,8 @@ class DataManager:
             id_categories.append(str(t[0]))
         return id_categories
 
-    # Insert 5 categories in the MySQL DataBase
     def insert_categories(self):
+        """Insert categories in the MySQL DataBase"""
         self.cat_id = self.get_categories()
         if not self.get_id_categories():
             self.cat_name = [s.replace('fr:', '') for s in self.cat_id]
@@ -65,8 +68,8 @@ class DataManager:
         else:
             print("Votre base est a jour")
 
-    # Insert all the products associate to the category in the MySQL DB
     def insert_products(self):
+        """Insert all the products associate to the category in the MySQL DB"""
         id_categories = self.get_id_categories()
         for j in id_categories:
             products_list = openfoodfacts.products.get_by_category(j)
@@ -82,13 +85,13 @@ class DataManager:
                 except:
                     continue
 
-    # Build and Return the url of a product from the id
     def get_url_product(self, product_id):
+        """Build and Return the url of a product from the id"""
         url = "https://world.openfoodfacts.org/api/v0/product/" + product_id
         return url
 
-    # Call the functions and manage the MySQL DB
     def create_tables(self):
+        """Call the functions and manage the MySQL DB"""
         try:
             self.create_table(self.create_categories)
             self.create_table(self.create_products)
@@ -98,8 +101,8 @@ class DataManager:
             print("RollBack : {}".format(e))
             self.conn.rollback()
 
-    # Insert data in the tables Categories and Products
     def insert_data(self):
+        """Insert data in the tables Categories and Products"""
         try:
             self.insert_categories()
             self.conn.commit()
@@ -107,6 +110,6 @@ class DataManager:
             print("RollBack : {}".format(e_cat))
             self.conn.rollback()
 
-    # Close the connector mysql
     def quit_database(self):
+        """Close the connector mysql"""
         self.conn.close()

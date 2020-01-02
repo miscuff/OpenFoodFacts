@@ -1,1 +1,2 @@
 mysql-connector-python==8.0.18
+git+https://github.com/openfoodfacts/openfoodfacts-python

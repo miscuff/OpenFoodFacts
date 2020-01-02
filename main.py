@@ -1,11 +1,11 @@
-"""Main to launch the program"""
-from MenuHandler import *
-from DataManager import *
-from DBCreator import *
+from menuhandler import MenuHandler
+
+from datamanager import DataManager
+
+from dbcreator import DBCreator
 
 
 def main():
-    """Main to launch the program"""
 
     # Initialize the DB when launching the program
     create_db = DBCreator()

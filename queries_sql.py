@@ -1,5 +1,6 @@
 """Queries used for the program"""
-from settings import *
+from settings import (CONNECTOR_USER, CONNECTOR_HOST, CONNECTOR_DATABASE,
+                      CONNECTOR_PASSWORD)
 
 # Create User
 CREATE_USER = """
@@ -47,9 +48,13 @@ CREATE_SUBSTITUTES = """
 CREATE TABLE IF NOT EXISTS Substitutes (
    id INT NOT NULL AUTO_INCREMENT,
    product_id BIGINT NOT NULL,
+   substitute_id BIGINT NOT NULL,
    PRIMARY KEY(id),
    CONSTRAINT fk_products_id
     FOREIGN KEY(product_id)
+    REFERENCES Products(id),
+    CONSTRAINT fk_substitutes_id
+    FOREIGN KEY(substitute_id)
     REFERENCES Products(id)
    )
 ENGINE=INNODB;"""
